@@ -56,8 +56,7 @@ app.get('/edit', (req, res) => {
 const routes = [
     'login',
     'tasks',
-    'users',
-    'logout'
+    'users'
 ]
 
 // Require routes

@@ -2,7 +2,8 @@ post = async (body, endpoint) => {
     let response = await fetch(endpoint, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem('token')
         },
         body: JSON.stringify(body)
     });
@@ -15,7 +16,8 @@ put = async (body, endpoint, id) => {
     let response = await fetch(`${endpoint}/${id}`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem('token')
         },
         body: JSON.stringify(body)
     });
@@ -26,7 +28,10 @@ put = async (body, endpoint, id) => {
 
 del = async (endpoint, id) => {
     let response = await fetch(`${endpoint}/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'token': localStorage.getItem('token')
+        }
     });
 
     let data = await response.json();
@@ -34,7 +39,11 @@ del = async (endpoint, id) => {
 }
 
 get = async endpoint => {
-    let response = await fetch(endpoint);
+    let response = await fetch(endpoint, {
+        headers: {
+            'token': localStorage.getItem('token')
+        }
+    });
     let data = await response.json();
     return data;
 }
