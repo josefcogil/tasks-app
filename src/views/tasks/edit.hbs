@@ -1,0 +1,63 @@
+<div class="container p-3 h-100 d-flex align-items-center">
+    <div class="row w-100 m-auto">
+        <div class="col-md-6 col-sm-12 m-auto">
+            <h3 class="text-center">Edit Task</h3>
+            <form id="formTask">
+                <label class="col-form-label">Title</label>
+                <input type="text" value="{{this.title}}" id="title" class="form-control" placeholder="Task title">
+                <label class="col-form-label">Description</label>
+                <textarea class="form-control" value="{{this.description}}" id="description" cols="30" rows="3"
+                    placeholder="Task description"></textarea>
+                <input class="btn btn-success mt-4 w-100 shadow" id="btn-sub" type="submit" value="Edit">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let btn = document.getElementById('btn-sub');
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    getTask = async id => {
+        let response = await get(`/tasks/${id}`);
+        let task = response.task;
+
+        document.getElementById('title').value = task.title;
+        document.getElementById('description').value = task.description;
+    }
+
+    getTask(id);
+
+    document.getElementById('formTask').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        let body = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value
+        }
+
+        btn.classList.add('disabled');
+        let response = await put(body, '/tasks', id);
+        btn.classList.remove('disabled');
+
+        if (response.ok === false) {
+            swal({
+                title: 'Error!',
+                text: response.message,
+                icon: 'error'
+            })
+
+            return;
+        }
+
+        swal({
+            title: 'Done!',
+            text: "Task edited",
+            icon: 'success'
+        }).then(() => {
+            window.location.href = '/tasks'
+        })
+    });
+</script>

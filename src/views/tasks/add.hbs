@@ -1,0 +1,50 @@
+<div class="container p-3 h-100 d-flex align-items-center">
+    <div class="row w-100 m-auto">
+        <div class="col-md-6 col-sm-12 m-auto">
+            <h3 class="text-center">Create Task</h3>
+            <form id="formTask">
+                <label class="col-form-label">Title</label>
+                <input type="text" id="title" class="form-control" placeholder="Task title">
+                <label class="col-form-label">Description</label>
+                <textarea class="form-control" id="description" cols="30" rows="3"
+                    placeholder="Task description"></textarea>
+                <input class="btn btn-success mt-4 w-100 shadow" id="btn-sub" type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let btn = document.getElementById('btn-sub');
+
+    document.getElementById('formTask').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        let body = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value
+        }
+
+        btn.classList.add('disabled');
+        let response = await post(body, '/tasks');
+        btn.classList.remove('disabled');
+
+        if (response.ok === false) {
+            swal({
+                title: 'Error!',
+                text: response.message,
+                icon: 'error'
+            })
+
+            return;
+        }
+
+        swal({
+            title: 'Done!',
+            text: "New task created",
+            icon: 'success'
+        }).then(() => {
+            window.location.href = '/tasks'
+        })
+    });
+</script>

@@ -1,0 +1,110 @@
+<div class="container-fluid h-100 w-100">
+    {{#if tasks}}
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h3 class="text-center mt-5 mb-5">Your Tasks</h3>
+        </div>
+    </div>
+    <div class="row">
+        {{#each tasks}}
+        <div class="col-md-4 col-sm-12 mb-5">
+            <div class="card h-100 shadow">
+                <div class="card-header">
+                    {{this.title}}
+                </div>
+                <div class="card-body">
+                    <div class="card-content">
+                        <p>{{this.description}}</p>
+                        {{#if this.done}}
+                        <h6 class="text-success mt-2">Task completed <i class="fa fa-check fa-sm text-success"></i></h6>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-around">
+                    {{#if this.done}}
+                    <a onclick="delTask({{this.id}})" class="text-danger"
+                        style="text-decoration: none; cursor: pointer;">Delete <i
+                            class="fa fa-trash fa-md text-danger"></i></a>
+                    {{else}}
+                    <a onclick="delTask({{this.id}})" class="text-danger"
+                        style="text-decoration: none; cursor: pointer;">Delete <i
+                            class="fa fa-trash fa-md text-danger"></i></a>
+                    <a class="text-primary" style="text-decoration: none;" href="/edit?id={{this.id}}">Edit <i
+                            class="fa fa-edit fa-md text-primary"></i></a>
+                    <a onclick="done({{this.id}})" class="text-success"
+                        style="text-decoration: none; cursor: pointer;">Done <i
+                            class="fa fa-check-circle fa-md text-success"></i></a>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+        {{else}}
+
+        <h3 class="text-center">You don't have tasks</h3>
+
+        {{/if}}
+    </div>
+</div>
+
+<script>
+    done = async id => {
+
+        let body = { done: true }
+
+        let response = await put(body, '/tasks', id);
+
+        if (response.ok === false) {
+            swal({
+                title: 'Error!',
+                text: response.message,
+                icon: 'error'
+            })
+
+            return;
+        }
+
+        swal({
+            title: 'Done!',
+            text: "Task Completed",
+            icon: 'success'
+        }).then(() => {
+            window.location.href = '/tasks'
+        })
+    }
+
+
+    delTask = async id => {
+        swal({
+            title: 'Attention!',
+            text: 'Do you want to delete this task?',
+            icon: 'warning',
+            dangerMode: true,
+            buttons: true,
+        })
+            .then(async (value) => {
+                if (value) {
+                    let response = await del('/tasks', id);
+
+                    if (response.ok === false) {
+                        swal({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error'
+                        })
+
+                        return;
+                    }
+
+                    swal({
+                        title: 'Done!',
+                        text: "Task Deleted",
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '/tasks'
+                    })
+                }
+            })
+    }
+</script>

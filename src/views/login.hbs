@@ -1,0 +1,48 @@
+<div class="container p-3 h-100 d-flex align-items-center">
+    <div class="row m-auto w-100">
+        <div class="col-md-6 col-sm-12 m-auto">
+            <h3 class="text-center text-uppercase text-secondary">Login</h3>
+            <form id="formLogin">
+                <i class="fa fa-at fa-sm text-secondary"></i>
+                <label class="col-form-label">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                <i class="fa fa-key fa-sm text-secondary"></i>
+                <label class="col-form-label">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                <input class="btn btn-success mt-4 w-100 shadow" id="btn-sub" type="submit" value="login">
+            </form>
+            <div class="p-3 text-center">
+                <a class="" href="/signup">Signup</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let btn = document.getElementById('btn-sub');
+
+    document.getElementById('formLogin').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        let body = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        }
+
+        btn.classList.add('disabled')
+        let response = await post(body, '/login');
+        btn.classList.remove('disabled')
+
+        if (response.ok === false) {
+            swal({
+                title: 'Error!',
+                text: response.message,
+                icon: 'error'
+            })
+
+            return;
+        }
+
+        window.location.href = '/tasks';
+    });
+</script>

@@ -1,0 +1,151 @@
+<div class="container p-3 h-100 d-flex align-items-center">
+    <div class="row w-100 m-auto">
+        <div class="col-md-10 col-sm-12 m-auto">
+            <h3 class="text-center text-uppercase text-secondary">Signup</h3>
+            <form id="formSignup">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 form-group" id="input-name">
+                        <label class="col-form-label">First Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                        <div class="invalid-feedback">
+                            Name can only contain letters.
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 form-group" id="input-last">
+                        <label class="col-form-label">Lastname <span>*</span></label>
+                        <input type="text" class="form-control" id="lastname" placeholder="Enter your last name">
+                        <div class="invalid-feedback">
+                            Name field can only contain letters.
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 form-group" id="input-email">
+                        <label class="col-form-label">Email <span>*</span></label>
+                        <input type="text" class="form-control" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="col-md-6 col-sm-12 form-group mt-3" id="input-password1">
+                        <label for="password1">Password <span>*</span></label>
+                        <input type="password" class="form-control" id="password1" placeholder="Enter a password">
+                        <div class="invalid-feedback">
+                            The password must contain at least one capital letter and one number, with a maximum of 12
+                            characters.
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 form-group mt-3" id="input-password2">
+                        <label for="password2">Password Repeat <span>*</span></label>
+                        <input type="password" class="form-control" id="password2" placeholder="Repeat the password">
+                        <div class="invalid-feedback">
+                            Password doesn't match.
+                        </div>
+                    </div>
+                </div>
+                <input class="btn btn-success mt-4 w-100 shadow" id="btn-sub" type="submit" value="Signup">
+            </form>
+            <div class="p-3 text-center">
+                <a class="" href="/login">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let btn = document.getElementById('btn-sub');
+    let name = false;
+    let last = false;
+    let email = false;
+    let password = false;
+    let verify = false;
+
+    // Handle name input
+    document.getElementById('name').addEventListener('input', () => {
+        let field = event.target;
+        let inputName = document.getElementById('input-name');
+
+        name = validateName(field.value, inputName, field);
+    });
+
+    // Handle lastname input
+    document.getElementById('lastname').addEventListener('input', () => {
+        let field = event.target;
+        let inputLast = document.getElementById('input-last');
+
+        last = validateName(field.value, inputLast, field);
+    });
+
+    // Handle email input
+    document.getElementById('email').addEventListener('input', () => {
+        let field = event.target;
+        let inputEmail = document.getElementById('input-email');
+
+        email = validateMail(field.value, inputEmail, field);
+    });
+
+    // Handle password input
+    document.getElementById('password1').addEventListener('input', () => {
+        let field = event.target;
+        let inputPassword = document.getElementById('input-password1');
+
+        password = validatePassword(field.value, inputPassword, field);
+    });
+
+    // Handle password2 input
+    document.getElementById('password2').addEventListener('input', () => {
+        let field = event.target;
+        let inputPassword = document.getElementById('input-password2');
+        let password = document.getElementById('password1').value;
+
+        verify = passwordMatch(password, field.value, inputPassword, field);
+    });
+
+
+    // Handle form submit
+    document.getElementById('formSignup').addEventListener('submit', async e => {
+
+        e.preventDefault();
+
+        let err = false;
+        let msg = '';
+
+        if (!name) { err = true; msg = 'Please enter a valid name'; }
+        else if (!last) { err = true; msg = 'Please enter a valid lastname'; }
+        else if (!email) { err = true; msg = 'Please enter a valid email'; }
+        else if (!password) { err = true; msg = 'Please enter a valid password'; }
+        else if (!verify) { err = true; msg = 'Make sure the passwords match'; }
+
+        if (err) {
+            swal({
+                title: "Error!",
+                text: msg,
+                icon: "error"
+            });
+
+            return;
+        }
+
+        let body = {
+            first_name: document.getElementById('name').value,
+            last_name: document.getElementById('lastname').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password1').value
+        }
+
+        btn.classList.add('disabled')
+        let response = await post(body, '/users');
+        btn.classList.remove('disabled')
+
+        if (response.ok === false) {
+            swal({
+                title: 'Error!',
+                text: response.message,
+                icon: 'error'
+            })
+            return;
+        }
+
+        swal({
+            title: 'Done!',
+            text: "You'll be redirected to the login",
+            icon: 'success'
+        });
+
+        window.location.href = '/login';
+    });
+</script>
