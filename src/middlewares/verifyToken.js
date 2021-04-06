@@ -3,7 +3,7 @@ const User = require('../database/models/User');
 
 module.exports = {
     verifyToken: async (req, res, next) => {
-        const token = req.headers['token'];
+        const token = req.cookies.token;
 
         if (!token) {
             res.render('403', { layout: 'out.hbs' });

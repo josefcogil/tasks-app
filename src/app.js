@@ -13,6 +13,8 @@ require('dotenv').config()
 const db = knex(knexfile.production);
 Model.knex(db);
 
+app.enable('trust proxy');
+
 // CORS
 app.use(cors());
 

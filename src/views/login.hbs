@@ -19,10 +19,6 @@
 </div>
 
 <script>
-    if (localStorage.getItem('token')) {
-        localStorage.removeItem('token');
-    }
-
     let btn = document.getElementById('btn-sub');
 
     document.getElementById('formLogin').addEventListener('submit', async e => {
@@ -46,8 +42,6 @@
 
             return;
         }
-
-        localStorage.setItem('token', response.token);
 
         window.location.href = '/tasks';
     });
