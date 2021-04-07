@@ -10,7 +10,7 @@ const knexfile = require('./database/knexfile');
 require('dotenv').config()
 
 // Objection Setup
-const db = knex(knexfile.development);
+const db = knex(knexfile.production);
 Model.knex(db);
 
 app.enable('trust proxy');
