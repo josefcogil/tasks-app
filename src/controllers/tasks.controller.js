@@ -43,6 +43,13 @@ module.exports = {
                 .where('id_user', '=', req.id_user)
                 .orderBy('id', 'ASC')
 
+
+            if (tasks.length === 0) {
+                console.log('No')
+                res.render('tasks');
+                return;
+            }
+
             res.render('tasks', { tasks });
         } catch (err) {
             res.status(500).json({ message: 'Database error' });
